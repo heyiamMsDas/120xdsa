@@ -1,0 +1,91 @@
+Problem: Longest Common Subsequence (LCS)
+
+We are given two strings text1 and text2.
+We need to find the length of the longest subsequence that is present in both strings.
+
+👉 A subsequence means characters are in order but not necessarily contiguous.
+Example:
+
+abcde and ace → LCS length = 3 (ace).
+
+Code Explanation
+1. Recursive Function f(i, j, text1, text2, dp)
+int f(int i , int j , string &text1 , string &text2 , vector<vector<int>>&dp)
+
+
+i → current index in text1 (starting from end).
+
+j → current index in text2 (starting from end).
+
+dp[i][j] → stores the result of LCS for substring text1[0..i] and text2[0..j].
+
+Base Case
+if(i < 0 || j < 0) return 0;
+
+
+If we go before the start of a string, LCS = 0.
+
+Memoization Check
+if(dp[i][j] != -1) return dp[i][j];
+
+
+If already solved for (i, j), just return stored answer.
+
+This avoids recomputation → improves efficiency.
+
+When Characters Match
+if(text1[i] == text2[j]) {
+    return 1 + f(i-1 , j-1 , text1 , text2 , dp);
+}
+
+
+If last characters are same → they must be part of LCS.
+
+So, answer = 1 + f(i-1, j-1, ...).
+
+When Characters Do Not Match
+return dp[i][j] = max(f(i-1 , j , text1 , text2 , dp),
+                      f(i , j-1 , text1 , text2 , dp));
+
+
+If last characters differ → two choices:
+
+Ignore text1[i], move left (i-1, j)
+
+Ignore text2[j], move up (i, j-1)
+
+Take the maximum of both.
+
+2. Main Function longestCommonSubsequence
+int longestCommonSubsequence(string text1, string text2) {
+    int n = text1.size();
+    int m = text2.size();
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return f(n-1, m-1, text1, text2, dp);
+}
+
+
+Get lengths of both strings.
+
+Initialize DP table with -1.
+
+Call recursive function starting from last indices (n-1, m-1).
+
+Time & Space Complexity
+
+Time Complexity:
+Each (i, j) pair is computed once → O(n * m).
+
+Space Complexity:
+O(n * m) for dp + O(n+m) recursion stack.
+
+Interview Explanation (Summary You Can Say)
+
+The code uses recursion with memoization (top-down DP) to solve the Longest Common Subsequence problem.
+We start from the last characters of both strings and check:
+
+If characters match → include them in LCS.
+
+If not, explore both possibilities (skip from one string at a time).
+We store intermediate results in a DP table to avoid recomputation.
+The overall complexity is O(n*m).
